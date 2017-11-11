@@ -1,0 +1,58 @@
+{% extends 'layouts/application.html' %}
+
+{% block container %}
+  <h1 class="display-4 mb-5 text-center">The Wall</h1>
+  <div class="row justify-content-md-center">
+    <div class="col col-md-8">
+      <form action="/post" method="POST" class="mb-5 bg-light p-3 rounded text-right border">
+        <div class="form-group">
+          <input type="text" class="form-control" name="title" id="title" placeholder="Title" />
+        </div>
+        <div class="form-group">
+          <textarea class="form-control" name="content" id="content" placeholder="Got something to say?"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Post</button>
+      </form>
+
+      {% for post in posts %}
+        <div class="card mb-5">
+          <div class="card-body">
+            <h5 class="my-0">{{ post.title }}</h5>
+            <p>
+              <span class="font-weight-bold">
+                {{ post.full_name }}
+              </span>
+              <span class="text-muted">
+                ({{ post.created_at.strftime('%b %d %Y') }})
+              </span>
+            </p>
+            <p>
+              {{ post.content }}
+            </p>
+          </div>
+          <div class="card-footer">
+            {% for comment in comments %}
+              {% if comment.post_id == post.id %}
+                <span class="text-muted">
+                  ({{ comment.created_at.strftime('%b %d %Y') }})
+                </span>
+                <p>
+                  <span class="font-weight-bold">
+                    {{ comment.full_name }}
+                  </span>
+                  {{ comment.content }}
+                </p>
+              {% endif %}
+            {% endfor %}
+            <form action="/comment/{{ post.id }}" method="POST" class="text-right">
+              <div class="form-group">
+                <textarea class="form-control" name="content" id="content" placeholder="Write your reply..."></textarea>
+              </div>
+              <button class="btn btn-success" type="submit">Reply</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
